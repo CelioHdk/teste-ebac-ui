@@ -4,7 +4,7 @@ const perfil = require('../../fixtures/perfil.json')
 describe ('Funcionalidade: Login' , () =>  {
 
         beforeEach(() => {
-            cy.visit ('minha-conta')
+            cy.visit ('minha-conta/edit-account')
         });
 
         afterEach(() => {
@@ -13,20 +13,22 @@ describe ('Funcionalidade: Login' , () =>  {
 
     it ('Deve fazer Login com sucesso' , ()  => {
         cy.get('#username').type ('celio.teste@teste.com.br')
+        //cy.get('#username').type (login.usuario)
         cy.get('#password').type ('teste@1234')
+        //cy.get('#password').type (login.senha)
         cy.get('.woocommerce-form > .button').click ()
 
-        cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should('contain', 'Olá, celio.teste (não é celio.teste? Sair)')
+        cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should('contain', 'Olá, Celio.teste (não é Celio.teste? Sair)')
     })
 
 
     it('Deve exibir uma mensagem de erro ao inserir usuário inválido', () => {
-        cy.get('#username').type ('celio@teste.com.br')
-        cy.get('#password').type ('teste@1234')
+        cy.get('#username').type ('celio.teste@teste.com.br')
+        cy.get('#password').type ('teste@123')
         cy.get('.woocommerce-form > .button').click ()
 
-        cy.get('.woocommerce-error > li'). should ('contain', 'Endereço de e-mail desconhecido. ')
-        cy.get('.woocommerce-error > li'). should ('exist')
+        cy.get('.woocommerce-error >li '). should ('contain', 'Olá, Celio.teste (não é Celio.teste? Sair)')
+        cy.get('.woocommerce-error >li'). should ('exist')
         
     });
 
@@ -34,30 +36,37 @@ describe ('Funcionalidade: Login' , () =>  {
 )
 
     it('Deve exibir uma mensagem de erro ao inserir uma senha inválida', () => {
-    cy.get('#username').type ('celio.teste@teste.com.br')
-    cy.get('#password').type ('teste@1234')
+    cy.get('#username').type ('celio@teste.com.br')
+    cy.get('#password').type ('teste@12345')
     cy.get('.woocommerce-form > .button').click ()
-
-    //cy.get('.woocommerce-error > li'). should ('contain', 'Erro: A senha fornecida para o e-mail celio.teste@teste.com.br está incorreta. Perdeu a senha?') 
-    cy.get('.woocommerce-error > li'). should ('exist')
+    
+    cy.get('.woocommerce-error >li '). should ('exist')
     
 });
-    it.only('Deve fazer login com sucesso - Usando massa de dados', () => {
-        cy.get('#username').type (perfil.usuário)
+    it('Deve fazer login com sucesso - Usando massa de dados', () => {
+        cy.get('#username').type (perfil.usuario)
         cy.get('#password').type (perfil.senha)
         cy.get('.woocommerce-form > .button').click ()
-        cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should('contain', 'Olá, celio.teste (não é celio.teste? Sair)')
+        cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should('contain', 'Olá, Celio.teste (não é Celio.teste? Sair)')
        
        
 });
-    it.only('Deve fazer login com sucesso - Usando Fixture', () => {
-        cy.fixture ('perfil').then (dados => {
-            cy.get('#username').type (dados.usuário, {log:false})
+    it('Deve fazer login com sucesso - Usando Fixture', () => {
+        cy.fixture('perfil').then (dados => {
+            cy.get('#username').type (dados.usuario, {log:false})
             cy.get('#password').type (dados.senha, {log:false})
             cy.get('.woocommerce-form > .button').click ()
-            cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should('contain', 'Olá, celio.teste (não é celio.teste? Sair)')
+            cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should('contain', 'Olá, Celio.teste (não é Celio.teste? Sair)')
          
         })
+
+        it.only('Deve fazer login com sucesso - usando Comandos Customizados', () => {
+            //cy.login('celio.teste@teste.com.br', 'teste@1234')
+            cy.login(login.usuario, login.senha)  
+            cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should('contain', 'Olá, Celio.teste (não é Celio.teste? Sair)')
+       
+            
+        });
 
     });
 
